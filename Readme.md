@@ -1,7 +1,7 @@
 # Личный проект «Что посмотреть» [![Build status][travis-image]][travis-url]
 
 * Студент: [Илья Грунов](https://up.htmlacademy.ru/react/5/user/1221137).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Пушков](https://htmlacademy.ru/profile/id638545).
 
 ---
 
