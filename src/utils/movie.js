@@ -1,14 +1,14 @@
-import {MovieRate, RateLimits} from "../const";
+import {RatingLabels, RatingLimits} from "../const";
 
-export const getMovieRate = (mark) => {
-  if (mark <= RateLimits.BAD_TO) {
-    return MovieRate.BAD;
-  } else if (RateLimits.BAD_TO < mark && mark <= RateLimits.NORMAL_TO) {
-    return MovieRate.NORMAL;
-  } else if (RateLimits.NORMAL_TO < mark && mark <= RateLimits.GOOD_TO) {
-    return MovieRate.GOOD;
-  } else if (mark > RateLimits.GOOD_TO) {
-    return MovieRate.VERY_GOOD;
+export const getRatingLabels = (mark) => {
+  if (mark <= RatingLimits.BAD) {
+    return RatingLabels.BAD;
+  } else if (RatingLimits.BAD < mark && mark <= RatingLimits.NORMAL) {
+    return RatingLabels.NORMAL;
+  } else if (RatingLimits.NORMAL < mark && mark <= RatingLimits.GOOD) {
+    return RatingLabels.GOOD;
+  } else if (RatingLimits.GOOD < mark && mark <= RatingLimits.VERY_GOOD) {
+    return RatingLabels.VERY_GOOD;
   }
-  return ``;
+  return RatingLabels.AWESOME;
 };

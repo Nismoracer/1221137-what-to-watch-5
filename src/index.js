@@ -11,7 +11,6 @@ const mainMovie = {
 };
 
 const myList = films.filter((movie) => movie.isMyList === true);
-
 ReactDOM.render(
     <App
       name={mainMovie.name}

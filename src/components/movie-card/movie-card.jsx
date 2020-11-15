@@ -1,33 +1,32 @@
-import React from "react";
+import React, {PureComponent} from "react";
 import PropTypes from "prop-types";
 import {propsTypesFilm} from "../../utils/prop-types";
+import MoviePreview from "../movie-preview/movie-preview";
 
-const MovieCard = ({film, onPreview, onMovieClick}) => {
+class MovieCard extends PureComponent {
 
-  return (
-    <article className="small-movie-card catalog__movies-card"
-      onMouseOver={(evt) => {
-        evt.preventDefault();
-        onPreview(film);
-      }}
-      onClick={(evt) => {
-        evt.preventDefault();
-        onMovieClick(film);
-      }}
-    >
-      <div className="small-movie-card__image">
-        <img src={`${film.icon}`} alt={`${film.title}`} width="280" height="175" />
-      </div>
-      <h3 className="small-movie-card__title">
-        <a className="small-movie-card__link" href="movie-page.html">{`${film.title}`}</a>
-      </h3>
-    </article>
-  );
-};
+  render() {
+    const {film, onMovieClick} = this.props;
+    return (
+      <article className="small-movie-card catalog__movies-card"
+        onClick={(evt) => {
+          evt.preventDefault();
+          onMovieClick(film);
+        }}
+      >
+        <MoviePreview
+          film={film}
+        />
+        <h3 className="small-movie-card__title">
+          <a className="small-movie-card__link" href="movie-page.html">{`${film.title}`}</a>
+        </h3>
+      </article>
+    );
+  }
+}
 
 MovieCard.propTypes = {
   onMovieClick: PropTypes.func.isRequired,
-  onPreview: PropTypes.func.isRequired,
   film: PropTypes.shape(propsTypesFilm),
 };
 

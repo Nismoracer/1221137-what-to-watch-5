@@ -25,14 +25,9 @@ class MoviesList extends PureComponent {
 
         <div className="catalog__movies-list">
 
-          {films.map((film, i) => (
+          {films.map((film) => (
             <MovieCard key={`${film.id}`}
-              film={films[i]}
-              onPreview={(movie) => {
-                this.setState(() => ({
-                  activeMovie: movie,
-                }));
-              }}
+              film={film}
               onMovieClick={onMovieClick}
             />
           ))}

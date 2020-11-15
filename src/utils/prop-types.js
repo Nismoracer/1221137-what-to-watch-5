@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import {MovieRate} from "../const";
+import {RatingLabels} from "../const";
 
 export const propsTypesFilm = {
   icon: PropTypes.string.isRequired,
@@ -8,7 +8,7 @@ export const propsTypesFilm = {
   title: PropTypes.string.isRequired,
   src: PropTypes.string.isRequired,
   mark: PropTypes.number.isRequired,
-  rate: PropTypes.oneOf([MovieRate.BAD, MovieRate.NORMAL, MovieRate.GOOD, MovieRate.VERY_GOOD]).isRequired,
+  rate: PropTypes.oneOf([RatingLabels.BAD, RatingLabels.NORMAL, RatingLabels.GOOD, RatingLabels.VERY_GOOD]).isRequired,
   ratings: PropTypes.string.isRequired,
   director: PropTypes.string.isRequired,
   actors: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,

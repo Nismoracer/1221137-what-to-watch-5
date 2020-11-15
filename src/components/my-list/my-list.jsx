@@ -38,7 +38,6 @@ const MyList = ({watchlist, onMovieClick, onHomeClick}) => {
             <MovieCard key = {`${item.id}`}
               film = {item}
               onMovieClick = {onMovieClick}
-              onPreview = {()=>{}}
             />
           ))}
 

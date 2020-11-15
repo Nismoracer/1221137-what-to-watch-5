@@ -1,6 +1,8 @@
 import React, {PureComponent} from "react";
 import PropTypes from "prop-types";
 
+const INITIAL_RATING = 3;
+
 class AddReview extends PureComponent {
 
   constructor(props) {
@@ -10,7 +12,7 @@ class AddReview extends PureComponent {
     this.handleRatingChange = this.handleRatingChange.bind(this);
 
     this.state = {
-      rating: 3,
+      rating: INITIAL_RATING,
       review: ``,
     };
   }

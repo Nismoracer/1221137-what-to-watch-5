@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {propsTypesFilm} from "../../utils/prop-types";
-import {getMovieRate} from "../../utils/movie";
+import {getRatingLabels} from "../../utils/movie";
 import MovieCard from "../movie-card/movie-card";
 
 const Film = ({films, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onReviewClick}) => {
@@ -102,7 +102,7 @@ const Film = ({films, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onR
             <div className="movie-rating">
               <div className="movie-rating__score">{film.mark}</div>
               <p className="movie-rating__meta">
-                <span className="movie-rating__level">{getMovieRate(film.mark)}</span>
+                <span className="movie-rating__level">{getRatingLabels(film.mark)}</span>
                 <span className="movie-rating__count">{film.ratings} ratings</span>
               </p>
             </div>

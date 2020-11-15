@@ -1,12 +1,14 @@
-export const MovieRate = {
+export const RatingLabels = {
   BAD: `Bad`,
   NORMAL: `Normal`,
   GOOD: `Good`,
-  VERY_GOOD: `Very good`
+  VERY_GOOD: `Very good`,
+  AWESOME: `Awesome`
 };
 
-export const RateLimits = {
-  BAD_TO: 5,
-  NORMAL_TO: 7,
-  GOOD_TO: 8,
+export const RatingLimits = {
+  BAD: 3,
+  NORMAL: 5,
+  GOOD: 8,
+  VERY_GOOD: 10,
 };
