@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {Switch, Route, BrowserRouter} from "react-router-dom";
+import {propsTypesFilm} from "../../utils/prop-types";
 import MainScreen from "../main-screen/main-screen";
 import AddReview from "../add-review/add-review";
 import Film from "../film/film";
@@ -8,7 +9,8 @@ import MyList from "../my-list/my-list";
 import Player from "../player/player";
 import SignIn from "../sign-in/sign-in";
 
-const App = ({name, genre, release, films, genres, watchlist}) => {
+const App = ({promo, films, watchlist}) => {
+
   return (
     <BrowserRouter>
       <Switch>
@@ -19,11 +21,8 @@ const App = ({name, genre, release, films, genres, watchlist}) => {
               onMovieClick = {(activeMovie) => history.push(`/films/${activeMovie.id}`)}
               onPlayPromoClick = {() => history.push(`/player/1`)}
               onMyListClick = {() => history.push(`/mylist`)}
-              name = {name}
-              genre = {genre}
-              release = {release}
+              promo = {promo}
               films = {films}
-              genres = {genres}
             />
           )}>
         </Route>
@@ -48,16 +47,19 @@ const App = ({name, genre, release, films, genres, watchlist}) => {
           )}>
         </Route>
         <Route exact path="/films/:id"
-          render={({history}) => (
-            <Film
-              films = {films}
-              onHomeClick = {() => history.push(`/`)}
-              onMyListClick = {() => history.push(`/mylist`)}
-              onPlayClick = {(activeMovie) => history.push(`/player/${activeMovie.id}`)}
-              onMovieClick = {(activeMovie) => history.push(`/films/${activeMovie.id}`)}
-              onReviewClick = {(activeMovie) => history.push(`/films/${activeMovie.id}/review`)}
-            />
-          )}>
+          render={({match, history}) => {
+            const {id} = match.params;
+            return (
+              <Film
+                films = {films}
+                movieId = {id}
+                onHomeClick = {() => history.push(`/`)}
+                onMyListClick = {() => history.push(`/mylist`)}
+                onPlayClick = {(activeMovie) => history.push(`/player/${activeMovie.id}`)}
+                onMovieClick = {(activeMovie) => history.push(`/films/${activeMovie.id}`)}
+                onReviewClick = {(activeMovie) => history.push(`/films/${activeMovie.id}/review`)}
+              />);
+          }}>
         </Route>
         <Route exact
           path="/player/:id"
@@ -73,12 +75,9 @@ const App = ({name, genre, release, films, genres, watchlist}) => {
 };
 
 App.propTypes = {
-  name: PropTypes.string.isRequired,
-  genre: PropTypes.string.isRequired,
-  release: PropTypes.number.isRequired,
-  films: PropTypes.array.isRequired,
-  genres: PropTypes.array.isRequired,
-  watchlist: PropTypes.array.isRequired
+  promo: PropTypes.shape(propsTypesFilm).isRequired,
+  films: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)).isRequired,
+  watchlist: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)).isRequired,
 };
 
 export default App;

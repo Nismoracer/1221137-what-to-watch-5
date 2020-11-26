@@ -1,23 +1,31 @@
 import PropTypes from "prop-types";
-import {RatingLabels} from "../const";
 
 export const propsTypesFilm = {
-  icon: PropTypes.string.isRequired,
-  poster: PropTypes.string.isRequired,
-  background: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  src: PropTypes.string.isRequired,
-  mark: PropTypes.number.isRequired,
-  rate: PropTypes.oneOf([RatingLabels.BAD, RatingLabels.NORMAL, RatingLabels.GOOD, RatingLabels.VERY_GOOD]).isRequired,
-  ratings: PropTypes.string.isRequired,
+  backgroundColor: PropTypes.string,
+  backgroundImage: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   director: PropTypes.string.isRequired,
-  actors: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-  details: PropTypes.shape({
-    duration: PropTypes.string.isRequired,
-    genre: PropTypes.string.isRequired,
-    release: PropTypes.string.isRequired,
-    comments: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-    description: PropTypes.string.isRequired,
-  }).isRequired,
-  isMyList: PropTypes.bool.isRequired
+  genre: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  isFavorite: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired,
+  posterImage: PropTypes.string.isRequired,
+  previewImage: PropTypes.string.isRequired,
+  previewVideoLink: PropTypes.string.isRequired,
+  rating: PropTypes.number.isRequired,
+  released: PropTypes.number.isRequired,
+  runtime: PropTypes.number.isRequired,
+  scoresCount: PropTypes.number.isRequired,
+  starring: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+  videoLink: PropTypes.string.isRequired
+};
+
+export const propsTypesReview = {
+  comment: PropTypes.string,
+  date: PropTypes.instanceOf(Date),
+  id: PropTypes.number,
+  rating: PropTypes.number,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string})
 };

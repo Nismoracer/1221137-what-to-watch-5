@@ -1,53 +1,68 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from "prop-types";
 import {propsTypesFilm} from "../../utils/prop-types";
-import {getRatingLabels} from "../../utils/movie";
-import MovieCard from "../movie-card/movie-card";
+import Header from "../header/header";
+import FilmMenu from "../film-menu/film-menu";
+import FilmOverview from "../film-overview/film-overview";
+import FilmDetails from "../film-details/film-details";
+import FilmReviews from "../film-reviews/film-reviews";
+import reviews from "../../mocks/reviews";
+import {MovieMenu} from "../../const";
+import MoviesList from "../movies-list/movies-list";
 
-const Film = ({films, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onReviewClick}) => {
-  const TOTAL_FILMS = 7;
-  const randomIndex = Math.round(Math.random() * TOTAL_FILMS);
-  const film = films[randomIndex];
+const Film = ({films, movieId, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onReviewClick}) => {
+  const [activeMenu, setMenuState] = useState(MovieMenu.OVERVIEW);
+  const [film, setFilm] = useState(null);
 
+  useEffect(() => {
+    const currentFilm = films.find((item) => item.id === parseInt(movieId, 10));
+    setFilm(currentFilm);
+  });
+
+  const renderActiveSection = () => {
+    let activeSection = null;
+    switch (activeMenu) {
+      case MovieMenu.OVERVIEW:
+        activeSection = <FilmOverview film={film} />;
+        break;
+      case MovieMenu.DETAILS:
+        activeSection = <FilmDetails film={film} />;
+        break;
+      case MovieMenu.REVIEWS:
+        activeSection = <FilmReviews reviews={reviews} />;
+        break;
+    }
+    return activeSection;
+  };
+
+  const handleActiveMenu = (evt) => {
+    evt.preventDefault();
+    setMenuState(evt.target.id);
+    renderActiveSection();
+  };
+
+  if (!film) {
+    return <p>No such page...</p>;
+  }
+  const {backgroundImage, name, genre, released, posterImage} = film;
   return <React.Fragment>
     <section className="movie-card movie-card--full">
       <div className="movie-card__hero">
         <div className="movie-card__bg">
-          <img src={`${film.background}`} alt={`${film.title}`} />
+          <img src={`${backgroundImage}`} alt={`${name}`} />
         </div>
 
-        <h1 className="visually-hidden">WTW</h1>
-
-        <header className="page-header movie-card__head">
-          <div className="logo">
-            <a href="main.html" className="logo__link"
-              onClick={(evt) => {
-                evt.preventDefault();
-                onHomeClick();
-              }}>
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
-          </div>
-
-          <div className="user-block">
-            <div className="user-block__avatar"
-              onClick={(evt) => {
-                evt.preventDefault();
-                onMyListClick();
-              }}>
-              <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-            </div>
-          </div>
-        </header>
+        <Header
+          onHomeClick={onHomeClick}
+          onMyListClick={onMyListClick}
+        />
 
         <div className="movie-card__wrap">
           <div className="movie-card__desc">
-            <h2 className="movie-card__title">{film.title}</h2>
+            <h2 className="movie-card__title">{name}</h2>
             <p className="movie-card__meta">
-              <span className="movie-card__genre">{film.details.genre}</span>
-              <span className="movie-card__year">{film.details.release}</span>
+              <span className="movie-card__genre">{genre}</span>
+              <span className="movie-card__year">{released}</span>
             </p>
 
             <div className="movie-card__buttons">
@@ -81,38 +96,15 @@ const Film = ({films, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onR
       <div className="movie-card__wrap movie-card__translate-top">
         <div className="movie-card__info">
           <div className="movie-card__poster movie-card__poster--big">
-            <img src={`${film.poster}`} alt={`${film.title}`} width="218" height="327" />
+            <img src={`${posterImage}`} alt={`${name}`} width="218" height="327" />
           </div>
 
           <div className="movie-card__desc">
-            <nav className="movie-nav movie-card__nav">
-              <ul className="movie-nav__list">
-                <li className="movie-nav__item movie-nav__item--active">
-                  <a href="#" className="movie-nav__link">Overview</a>
-                </li>
-                <li className="movie-nav__item">
-                  <a href="#" className="movie-nav__link">Details</a>
-                </li>
-                <li className="movie-nav__item">
-                  <a href="#" className="movie-nav__link">Reviews</a>
-                </li>
-              </ul>
-            </nav>
-
-            <div className="movie-rating">
-              <div className="movie-rating__score">{film.mark}</div>
-              <p className="movie-rating__meta">
-                <span className="movie-rating__level">{getRatingLabels(film.mark)}</span>
-                <span className="movie-rating__count">{film.ratings} ratings</span>
-              </p>
-            </div>
-
-            <div className="movie-card__text">
-              <p>{film.details.description}</p>
-              <p className="movie-card__director"><strong>Director: {film.director}</strong></p>
-
-              <p className="movie-card__starring"><strong>Starring: {film.actors.join(`, `)}</strong></p>
-            </div>
+            <FilmMenu
+              isActive={activeMenu}
+              onMenuClick={handleActiveMenu}
+            />
+            {renderActiveSection()}
           </div>
         </div>
       </div>
@@ -124,13 +116,10 @@ const Film = ({films, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onR
 
         <div className="catalog__movies-list">
 
-          {films.map((item) => (
-            <MovieCard key = {`${item.id}`}
-              film = {item}
-              onMovieClick = {onMovieClick}
-              onPreview = {()=>{}}
-            />
-          ))}
+          <MoviesList
+            films={films}
+            onMovieClick={onMovieClick}
+          />
 
         </div>
       </section>
@@ -153,6 +142,7 @@ const Film = ({films, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onR
 };
 
 Film.propTypes = {
+  movieId: PropTypes.string.isRequired,
   onHomeClick: PropTypes.func.isRequired,
   onMyListClick: PropTypes.func.isRequired,
   onPlayClick: PropTypes.func.isRequired,

@@ -1,24 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {createStore} from "redux";
+import {Provider} from "react-redux";
 import App from "./components/app/app";
 import films from "./mocks/films";
-import genres from "./mocks/genres";
+import {reducer} from "./store/reducer";
 
-const mainMovie = {
-  name: `The Grand Budapest Hotel`,
-  genre: `Drama`,
-  release: 2014
-};
+const store = createStore(
+    reducer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : (f) => f
+);
 
-const myList = films.filter((movie) => movie.isMyList === true);
+const myList = films.filter((movie) => movie.isFavorite === true);
 ReactDOM.render(
-    <App
-      name={mainMovie.name}
-      genre={mainMovie.genre}
-      release={mainMovie.release}
-      films={films}
-      genres={genres}
-      watchlist={myList}
-    />,
+    <Provider store={store}>
+      <App
+        promo={films[0]}
+        films={films}
+        watchlist={myList}
+      />
+    </Provider>,
     document.querySelector(`#root`)
 );
