@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {propsTypesFilm} from "../../utils/prop-types";
-import {humanizeDuration} from "../../utils/movie";
+import {convertDuration} from "../../utils/movie";
 
 const FilmDetails = ({film}) => {
   const {director, starring, runtime, genre, released} = film;
@@ -15,7 +15,8 @@ const FilmDetails = ({film}) => {
         <p className="movie-card__details-item">
           <strong className="movie-card__details-name">Starring</strong>
           <span className="movie-card__details-value">
-            {starring.join(`\n`)}
+            {starring.map((actor) => <React.Fragment key={actor}>{actor}<br/></React.Fragment>)
+            }
           </span>
         </p>
       </div>
@@ -23,7 +24,7 @@ const FilmDetails = ({film}) => {
       <div className="movie-card__text-col">
         <p className="movie-card__details-item">
           <strong className="movie-card__details-name">Run Time</strong>
-          <span className="movie-card__details-value">{humanizeDuration(runtime)}</span>
+          <span className="movie-card__details-value">{convertDuration(runtime)}</span>
         </p>
         <p className="movie-card__details-item">
           <strong className="movie-card__details-name">Genre</strong>

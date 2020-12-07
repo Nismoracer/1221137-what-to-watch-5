@@ -1,18 +1,31 @@
-import React, {useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import {propsTypesFilm} from "../../utils/prop-types";
 import Filter from "../filter/filter";
 import MoviesList from "../movies-list/movies-list";
+import LoadMore from "../load-more/load-more";
 import Promo from "../promo/promo";
-import {ActionCreator} from "../../store/action";
+import {filterMoviesListAction} from "../../store/action";
+import {MOVIES_COUNT_PER_STEP} from "../../const";
 
-const MainScreen = ({promo, films, filteredList, initializeList, filterList,
-  onMyListClick, onPlayPromoClick, onMovieClick}) => {
+const MainScreen = ({promo, films, filteredList, filterList,
+  onPlayPromoClick, onMovieClick}) => {
+
+  const [renderedMovies, updateRenderedMovies] = useState([]);
 
   useEffect(() => {
-    initializeList(films);
-  }, []);
+    const moviesCount = filteredList.length;
+    const renderedMoviesCount = Math.min(moviesCount, MOVIES_COUNT_PER_STEP);
+    updateRenderedMovies(filteredList.slice(0, renderedMoviesCount));
+  }, [filteredList]);
+
+  const handleLoadMoreMovies = () => {
+    const moviesCount = filteredList.length;
+    const newRenderedMoviesCount = Math.min(moviesCount, renderedMovies.length + MOVIES_COUNT_PER_STEP);
+    const newMovies = filteredList.slice(0, newRenderedMoviesCount);
+    updateRenderedMovies(newMovies);
+  };
 
   const handleFilterClick = (newFilter) => {
     filterList(newFilter);
@@ -22,7 +35,6 @@ const MainScreen = ({promo, films, filteredList, initializeList, filterList,
     <Promo
       promo={promo}
       onPlayPromoClick={onPlayPromoClick}
-      onMyListClick={onMyListClick}
     />
 
     <div className="page-content">
@@ -35,13 +47,12 @@ const MainScreen = ({promo, films, filteredList, initializeList, filterList,
         />
 
         <MoviesList
-          films={filteredList}
+          films={renderedMovies}
           onMovieClick={onMovieClick}
         />
-
-        <div className="catalog__more">
-          <button className="catalog__button" type="button">Show more</button>
-        </div>
+        { (renderedMovies.length < filteredList.length) ?
+          <LoadMore onLoadMoreClick={handleLoadMoreMovies} /> : null
+        }
 
       </section>
 
@@ -63,27 +74,24 @@ const MainScreen = ({promo, films, filteredList, initializeList, filterList,
 };
 
 const mapStateToProps = (state) => ({
-  filteredList: state.filteredList,
+  filteredList: state.MOVIES.filteredList,
+  films: state.MOVIES.initialList,
+  promo: state.MOVIES.promo,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  initializeList(films) {
-    dispatch(ActionCreator.initializeList(films));
-  },
   filterList(newFilter) {
-    dispatch(ActionCreator.filterList(newFilter));
+    dispatch(filterMoviesListAction(newFilter));
   },
 });
 
 MainScreen.propTypes = {
-  filteredList: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)).isRequired,
-  initializeList: PropTypes.func.isRequired,
-  filterList: PropTypes.func.isRequired,
-  onMyListClick: PropTypes.func.isRequired,
-  onMovieClick: PropTypes.func.isRequired,
-  onPlayPromoClick: PropTypes.func.isRequired,
   promo: PropTypes.shape(propsTypesFilm).isRequired,
   films: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)).isRequired,
+  filteredList: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)).isRequired,
+  filterList: PropTypes.func.isRequired,
+  onMovieClick: PropTypes.func.isRequired,
+  onPlayPromoClick: PropTypes.func.isRequired,
 };
 
 export {MainScreen};

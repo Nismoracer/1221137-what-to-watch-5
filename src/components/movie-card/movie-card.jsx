@@ -6,14 +6,10 @@ import MoviePreview from "../movie-preview/movie-preview";
 const MovieCard = ({film, onMovieClick}) => {
 
   return (
-    <article className="small-movie-card catalog__movies-card"
-      onClick={(evt) => {
-        evt.preventDefault();
-        onMovieClick(film);
-      }}
-    >
+    <article className="small-movie-card catalog__movies-card">
       <MoviePreview
         film={film}
+        onMovieClick={onMovieClick}
       />
       <h3 className="small-movie-card__title">
         <a className="small-movie-card__link" href="movie-page.html">{`${film.name}`}</a>

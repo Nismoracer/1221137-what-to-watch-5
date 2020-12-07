@@ -22,7 +22,7 @@ export const propsTypesFilm = {
 
 export const propsTypesReview = {
   comment: PropTypes.string,
-  date: PropTypes.instanceOf(Date),
+  date: PropTypes.string,
   id: PropTypes.number,
   rating: PropTypes.number,
   user: PropTypes.shape({

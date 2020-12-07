@@ -1,20 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Header from "../header/header";
+import {connect} from "react-redux";
 import {propsTypesFilm} from "../../utils/prop-types";
+import {postFavorite} from "../../store/api-action";
 
-const Promo = ({promo, onPlayPromoClick, onMyListClick}) => {
+const Promo = ({promo, onPlayPromoClick, changeFavorites}) => {
   const {backgroundImage, posterImage, name, genre, released} = promo;
+
+  const handleAddFavorite = (evt) => {
+    evt.preventDefault();
+    if (promo.isFavorite) {
+      changeFavorites(promo.id, 0);
+    } else {
+      changeFavorites(promo.id, 1);
+    }
+  };
+
   return (
     <section className="movie-card">
       <div className="movie-card__bg">
         <img src={`${backgroundImage}`} alt={`${name}`} />
       </div>
 
-      <Header
-        onMyListClick={onMyListClick}
-        onHomeClick={()=>{}}
-      />
+      <Header />
 
       <div className="movie-card__wrap">
         <div className="movie-card__info">
@@ -36,13 +45,14 @@ const Promo = ({promo, onPlayPromoClick, onMyListClick}) => {
                 evt.preventDefault();
                 onPlayPromoClick();
               }}>
-
               <svg viewBox="0 0 19 19" width="19" height="19">
                 <use xlinkHref="#play-s"></use>
               </svg>
               <span>Play</span>
             </button>
-            <button className="btn btn--list movie-card__button" type="button">
+            <button className="btn btn--list movie-card__button" type="button"
+              onClick={handleAddFavorite}
+            >
               <svg viewBox="0 0 19 20" width="19" height="20">
                 <use xlinkHref="#add"></use>
               </svg>
@@ -55,10 +65,19 @@ const Promo = ({promo, onPlayPromoClick, onMyListClick}) => {
   );
 };
 
+const mapDispatchToProps = (dispatch) => ({
+  changeFavorites(id, isFavorite) {
+    dispatch(postFavorite(id, isFavorite));
+  },
+});
+
 Promo.propTypes = {
+  changeFavorites: PropTypes.func.isRequired,
   onPlayPromoClick: PropTypes.func.isRequired,
-  onMyListClick: PropTypes.func.isRequired,
   promo: PropTypes.shape(propsTypesFilm),
 };
 
-export default Promo;
+const PromoWrapped = React.memo(Promo);
+
+export {PromoWrapped};
+export default connect(null, mapDispatchToProps)(PromoWrapped);

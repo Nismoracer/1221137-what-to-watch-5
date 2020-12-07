@@ -2,10 +2,12 @@ import React, {useState, useEffect, useRef} from "react";
 import PropTypes from "prop-types";
 import {propsTypesFilm} from "../../utils/prop-types";
 
-const MoviePreview = ({film}) => {
+const MoviePreview = ({film, onMovieClick}) => {
   const videoRef = useRef();
+  let timer = null;
 
   const [isLoading, setLoading] = useState(true);
+  const [isPlaying, setPlaying] = useState(false);
 
   useEffect(() => {
     const videoTag = videoRef.current;
@@ -19,23 +21,40 @@ const MoviePreview = ({film}) => {
 
   const onMouseEnter = () => {
     if (!isLoading) {
-      setTimeout(() => videoRef.current.play(), 1000);
+      timer = setTimeout(() => {
+        videoRef.current.play();
+        setPlaying(true);
+      }, 1000);
     }
   };
 
   const onMouseLeave = () => {
+    if (timer && !isPlaying) {
+      clearTimeout(timer);
+      return;
+    }
     videoRef.current.pause();
     videoRef.current.load();
+    setPlaying(false);
+  };
+
+  const handleMouseClick = (evt) => {
+    evt.preventDefault();
+    if (timer) {
+      clearTimeout(timer);
+    }
+    onMovieClick(film);
   };
 
   return (
     <div className="small-movie-card__image"
-      onMouseOver = {onMouseEnter}
-      onMouseOut = {onMouseLeave}
+      onMouseEnter = {onMouseEnter}
+      onMouseLeave = {onMouseLeave}
+      onClick = {handleMouseClick}
     >
       <video
-        width = "280px"
-        height = "175px"
+        width = "100%"
+        height = "100%"
         muted
         ref = {videoRef}
       />
@@ -43,8 +62,9 @@ const MoviePreview = ({film}) => {
   );
 };
 
-export default MoviePreview;
-
 MoviePreview.propTypes = {
+  onMovieClick: PropTypes.func.isRequired,
   film: PropTypes.shape(propsTypesFilm),
 };
+
+export default MoviePreview;

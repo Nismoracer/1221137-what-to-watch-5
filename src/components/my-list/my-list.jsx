@@ -1,23 +1,28 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PropTypes from "prop-types";
+import {connect} from "react-redux";
 import {propsTypesFilm} from "../../utils/prop-types";
-import MovieCard from "../movie-card/movie-card";
+import MoviesList from "../movies-list/movies-list";
+import {Link} from "react-router-dom";
+import {fetchMyList} from "../../store/api-action";
 
-const MyList = ({watchlist, onMovieClick, onHomeClick}) => {
+const MyList = ({favorites, onMovieClick, loadFavorites}) => {
+
+  useEffect(() => {
+    loadFavorites();
+  }, []);
 
   return (
     <div className="user-page">
       <header className="page-header user-page__head">
         <div className="logo">
-          <a href="main.html" className="logo__link"
-            onClick={(evt) => {
-              evt.preventDefault();
-              onHomeClick();
-            }}>
+          <Link className="logo__link"
+            to="/"
+          >
             <span className="logo__letter logo__letter--1">W</span>
             <span className="logo__letter logo__letter--2">T</span>
             <span className="logo__letter logo__letter--3">W</span>
-          </a>
+          </Link>
         </div>
 
         <h1 className="page-title user-page__title">My list</h1>
@@ -34,27 +39,21 @@ const MyList = ({watchlist, onMovieClick, onHomeClick}) => {
 
         <div className="catalog__movies-list">
 
-          {watchlist.map((item) => (
-            <MovieCard key = {`${item.id}`}
-              film = {item}
-              onMovieClick = {onMovieClick}
-            />
-          ))}
+          <MoviesList
+            films={favorites}
+            onMovieClick={onMovieClick}
+          />
 
         </div>
       </section>
 
       <footer className="page-footer">
         <div className="logo">
-          <a href="main.html" className="logo__link logo__link--light"
-            onClick={(evt) => {
-              evt.preventDefault();
-              onHomeClick();
-            }}>
+          <Link to="/" className="logo__link logo__link--light">
             <span className="logo__letter logo__letter--1">W</span>
             <span className="logo__letter logo__letter--2">T</span>
             <span className="logo__letter logo__letter--3">W</span>
-          </a>
+          </Link>
         </div>
 
         <div className="copyright">
@@ -65,10 +64,21 @@ const MyList = ({watchlist, onMovieClick, onHomeClick}) => {
   );
 };
 
+const mapStateToProps = (state) => ({
+  favorites: state.MOVIES.myList,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  loadFavorites() {
+    dispatch(fetchMyList());
+  },
+});
+
 MyList.propTypes = {
+  loadFavorites: PropTypes.func.isRequired,
   onMovieClick: PropTypes.func.isRequired,
-  onHomeClick: PropTypes.func.isRequired,
-  watchlist: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)),
+  favorites: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)),
 };
 
-export default MyList;
+export {MyList};
+export default connect(mapStateToProps, mapDispatchToProps)(MyList);

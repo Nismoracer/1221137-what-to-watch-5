@@ -1,24 +1,44 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {createStore} from "redux";
+import {createStore, applyMiddleware} from "redux";
+import {composeWithDevTools} from "redux-devtools-extension";
 import {Provider} from "react-redux";
+import thunk from "redux-thunk";
+import {createAPI} from "./services/api";
 import App from "./components/app/app";
-import films from "./mocks/films";
-import {reducer} from "./store/reducer";
+import Error from "./components/error/error";
+import rootReducer from "./store/reducers/root-reducer";
+import {requireAuthorization} from "./store/action";
+import {fetchInitialMoviesList, fetchPromoMovie, checkAuth} from "./store/api-action";
+import {AuthorizationStatus} from "./const";
+import {redirect} from "./store/middlewares/redirect";
+
+const api = createAPI(
+    () => store.dispatch(requireAuthorization(AuthorizationStatus.NO_AUTH))
+);
 
 const store = createStore(
-    reducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : (f) => f
+    rootReducer,
+    composeWithDevTools(
+        applyMiddleware(thunk.withExtraArgument(api)),
+        applyMiddleware(redirect)
+    )
 );
 
-const myList = films.filter((movie) => movie.isFavorite === true);
-ReactDOM.render(
-    <Provider store={store}>
-      <App
-        promo={films[0]}
-        films={films}
-        watchlist={myList}
-      />
-    </Provider>,
-    document.querySelector(`#root`)
-);
+store.dispatch(checkAuth());
+Promise.all([
+  store.dispatch(fetchInitialMoviesList()),
+  store.dispatch(fetchPromoMovie()),
+])
+  .then(() => {
+    ReactDOM.render(
+        <Provider store={store}>
+          <App
+          />
+        </Provider>,
+        document.querySelector(`#root`)
+    );
+  })
+  .catch(() => {
+    ReactDOM.render(<Error />, document.querySelector(`#root`));
+  });

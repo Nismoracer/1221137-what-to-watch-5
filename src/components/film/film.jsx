@@ -1,50 +1,50 @@
 import React, {useState, useEffect} from "react";
 import PropTypes from "prop-types";
-import {propsTypesFilm} from "../../utils/prop-types";
+import {connect} from "react-redux";
+import {propsTypesFilm, propsTypesReview} from "../../utils/prop-types";
 import Header from "../header/header";
-import FilmMenu from "../film-menu/film-menu";
-import FilmOverview from "../film-overview/film-overview";
-import FilmDetails from "../film-details/film-details";
-import FilmReviews from "../film-reviews/film-reviews";
-import reviews from "../../mocks/reviews";
-import {MovieMenu} from "../../const";
+import FilmTabs from "../film-tabs/film-tabs";
+import {AuthorizationStatus} from "../../const";
 import MoviesList from "../movies-list/movies-list";
+import {getFilteredList} from "../../movies";
+import {fetchReviews, postFavorite} from "../../store/api-action";
 
-const Film = ({films, movieId, onHomeClick, onMyListClick, onPlayClick, onMovieClick, onReviewClick}) => {
-  const [activeMenu, setMenuState] = useState(MovieMenu.OVERVIEW);
+const getSameMovies = (films, id, genre) => {
+  const SAME_MOVIES_LIMIT = 4;
+  const sameGenre = getFilteredList(films, genre);
+  const sameMovies = sameGenre.filter((film) => film.id !== id);
+  if (sameMovies.length > SAME_MOVIES_LIMIT) {
+    return sameMovies.slice(0, SAME_MOVIES_LIMIT);
+  }
+  return sameMovies;
+};
+
+const Film = ({films, movieId, reviews, authInfo, onPlayClick, onMovieClick, onReviewClick,
+  requestReviews, changeFavorites}) => {
+
   const [film, setFilm] = useState(null);
+  const currentFilm = films.find((item) => item.id === parseInt(movieId, 10));
 
   useEffect(() => {
-    const currentFilm = films.find((item) => item.id === parseInt(movieId, 10));
     setFilm(currentFilm);
-  });
-
-  const renderActiveSection = () => {
-    let activeSection = null;
-    switch (activeMenu) {
-      case MovieMenu.OVERVIEW:
-        activeSection = <FilmOverview film={film} />;
-        break;
-      case MovieMenu.DETAILS:
-        activeSection = <FilmDetails film={film} />;
-        break;
-      case MovieMenu.REVIEWS:
-        activeSection = <FilmReviews reviews={reviews} />;
-        break;
-    }
-    return activeSection;
-  };
-
-  const handleActiveMenu = (evt) => {
-    evt.preventDefault();
-    setMenuState(evt.target.id);
-    renderActiveSection();
-  };
+    requestReviews(movieId);
+  }, [currentFilm]);
 
   if (!film) {
     return <p>No such page...</p>;
   }
-  const {backgroundImage, name, genre, released, posterImage} = film;
+
+  const handleAddFavorite = (evt) => {
+    evt.preventDefault();
+    if (currentFilm.isFavorite) {
+      changeFavorites(currentFilm.id, 0);
+    } else {
+      changeFavorites(currentFilm.id, 1);
+    }
+  };
+
+  const {id, backgroundImage, name, genre, released, posterImage} = film;
+
   return <React.Fragment>
     <section className="movie-card movie-card--full">
       <div className="movie-card__hero">
@@ -52,10 +52,7 @@ const Film = ({films, movieId, onHomeClick, onMyListClick, onPlayClick, onMovieC
           <img src={`${backgroundImage}`} alt={`${name}`} />
         </div>
 
-        <Header
-          onHomeClick={onHomeClick}
-          onMyListClick={onMyListClick}
-        />
+        <Header />
 
         <div className="movie-card__wrap">
           <div className="movie-card__desc">
@@ -76,12 +73,17 @@ const Film = ({films, movieId, onHomeClick, onMyListClick, onPlayClick, onMovieC
                 </svg>
                 <span>Play</span>
               </button>
-              <button className="btn btn--list movie-card__button" type="button">
-                <svg viewBox="0 0 19 20" width="19" height="20">
-                  <use xlinkHref="#add"></use>
-                </svg>
-                <span>My list</span>
-              </button>
+              {
+                (authInfo !== AuthorizationStatus.AUTH) ? null :
+                  (<button className="btn btn--list movie-card__button" type="button"
+                    onClick={handleAddFavorite}
+                  >
+                    <svg viewBox="0 0 19 20" width="19" height="20">
+                      <use xlinkHref="#add"></use>
+                    </svg>
+                    <span>My list</span>
+                  </button>)
+              }
               <a href="add-review.html" className="btn movie-card__button"
                 onClick={(evt) => {
                   evt.preventDefault();
@@ -100,11 +102,12 @@ const Film = ({films, movieId, onHomeClick, onMyListClick, onPlayClick, onMovieC
           </div>
 
           <div className="movie-card__desc">
-            <FilmMenu
-              isActive={activeMenu}
-              onMenuClick={handleActiveMenu}
+
+            <FilmTabs
+              film = {currentFilm}
+              reviews = {reviews}
             />
-            {renderActiveSection()}
+
           </div>
         </div>
       </div>
@@ -117,7 +120,7 @@ const Film = ({films, movieId, onHomeClick, onMyListClick, onPlayClick, onMovieC
         <div className="catalog__movies-list">
 
           <MoviesList
-            films={films}
+            films={getSameMovies(films, id, genre)}
             onMovieClick={onMovieClick}
           />
 
@@ -141,14 +144,32 @@ const Film = ({films, movieId, onHomeClick, onMyListClick, onPlayClick, onMovieC
   </React.Fragment>;
 };
 
+const mapStateToProps = (state) => ({
+  authInfo: state.USER.authorizationStatus,
+  films: state.MOVIES.initialList,
+  reviews: state.REVIEWS.reviewsList,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  requestReviews(movieId) {
+    dispatch(fetchReviews(movieId));
+  },
+  changeFavorites(id, isFavorite) {
+    dispatch(postFavorite(id, isFavorite));
+  },
+});
+
 Film.propTypes = {
+  authInfo: PropTypes.string.isRequired,
   movieId: PropTypes.string.isRequired,
-  onHomeClick: PropTypes.func.isRequired,
-  onMyListClick: PropTypes.func.isRequired,
+  changeFavorites: PropTypes.func.isRequired,
+  requestReviews: PropTypes.func.isRequired,
   onPlayClick: PropTypes.func.isRequired,
   onMovieClick: PropTypes.func.isRequired,
   onReviewClick: PropTypes.func.isRequired,
   films: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)),
+  reviews: PropTypes.arrayOf(PropTypes.shape(propsTypesReview)),
 };
 
-export default Film;
+export {Film};
+export default connect(mapStateToProps, mapDispatchToProps)(Film);

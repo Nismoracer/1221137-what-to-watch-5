@@ -13,13 +13,13 @@ export const getRatingLabels = (mark) => {
   return RatingLabels.AWESOME;
 };
 
-export const humanizeDuration = (duration) => {
+export const convertDuration = (duration) => {
   const minutes = 60;
   const hours = duration / minutes;
   return Math.floor(hours) + `h ` + Math.floor(duration % minutes) + `m`;
 };
 
-export const humanizeDate = (inputDate) => {
+export const convertDate = (inputDate) => {
   let monthString = ``;
   const year = inputDate.getFullYear().toString();
   const day = inputDate.getDate().toString();
@@ -39,7 +39,7 @@ export const humanizeDate = (inputDate) => {
     case 12: monthString = `December`; break;
   }
   return {
-    human: monthString + ` ` + day + `, ` + year,
-    html: year + `-` + month + `-` + day
+    visible: monthString + ` ` + day + `, ` + year,
+    atribute: year + `-` + month + `-` + day
   };
 };

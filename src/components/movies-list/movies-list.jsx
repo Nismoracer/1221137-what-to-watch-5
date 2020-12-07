@@ -4,7 +4,6 @@ import {propsTypesFilm} from "../../utils/prop-types";
 import MovieCard from "../movie-card/movie-card";
 
 const MoviesList = ({films, onMovieClick}) => {
-
   if (!films) {
     return null;
   }

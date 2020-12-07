@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {propsTypesReview} from "../../utils/prop-types";
-import {humanizeDate} from "../../utils/movie";
+import {convertDate} from "../../utils/movie";
 
-const addComment = (item) => {
-  const {comment, date, rating, id, user: {name}} = item;
-  const htmlDate = humanizeDate(date).html;
-  const humanDate = humanizeDate(date).human;
+const addComment = (review) => {
+  const {comment, date, rating, id, user: {name}} = review;
+  const dateType = new Date(date);
+  const atribute = convertDate(dateType).atribute;
+  const visible = convertDate(dateType).visible;
 
   return (
     <div className="review" key={id}>
@@ -15,7 +16,7 @@ const addComment = (item) => {
 
         <footer className="review__details">
           <cite className="review__author">{name}</cite>
-          <time className="review__date" dateTime={`${htmlDate}`}>{humanDate}</time>
+          <time className="review__date" dateTime={`${atribute}`}>{visible}</time>
         </footer>
       </blockquote>
       <div className="review__rating">{rating}</div>
@@ -28,9 +29,9 @@ const FilmReviews = ({reviews}) => {
   if (reviews.length === 0) {
     return null;
   }
-  const middle = Math.ceil(reviews.length / 2);
-  const leftColumn = reviews.slice(0, middle);
-  const rightColumn = reviews.slice(middle);
+  const middleOfComments = Math.ceil(reviews.length / 2);
+  const leftColumn = reviews.slice(0, middleOfComments);
+  const rightColumn = reviews.slice(middleOfComments);
   return (
     <div className="movie-card__reviews movie-card__row">
       <div className="movie-card__reviews-col">
