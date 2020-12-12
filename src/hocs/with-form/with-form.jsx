@@ -1,15 +1,15 @@
 import React, {useState} from "react";
-import PropTypes from "prop-types";
-import Header from "../header/header";
 import {connect} from "react-redux";
-import {propsTypesFilm} from "../../utils/prop-types";
 import {setTransmitState} from "../../store/action";
 import {sendReview} from "../../store/api-action";
-import {AuthorizationStatus, TransmitState} from "../../const";
+import {TransmitState} from "../../const";
+import {compose} from "redux";
 
 const INITIAL_RATING = 0;
 
-const withLock = (Component) => {
+const withForm = (Component) => (props) => {
+  const {films, movieId, onSubmit} = props;
+
   const [rating, setRating] = useState(INITIAL_RATING);
   const [review, setReview] = useState(``);
   const [buttonDisabled, lockButton] = useState(true);
@@ -44,16 +44,15 @@ const withLock = (Component) => {
     onSubmit(rating, review, movieId);
   };
 
-  const {backgroundImage, name, posterImage} = currentFilm;
   return (
-    <Component>
+    <Component
       {...props}
-      auth={auth}
-      postState={postState}
-      films={films}
-      movieId={movieId}
-      onSubmit={handleSubmit}
-    </Component>
+      currentFilm={currentFilm}
+      buttonDisabled={buttonDisabled}
+      onRatingChange={handleRatingChange}
+      onReviewChange={handleReviewChange}
+      onFormSubmit={handleSubmit}
+    />
   );
 };
 
@@ -70,13 +69,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-withLock.propTypes = {
-  postState: PropTypes.string.isRequired,
-  auth: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  movieId: PropTypes.string.isRequired,
-  films: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)),
-};
-
-export {withLock};
-export default connect(mapStateToProps, mapDispatchToProps)(withLock);
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withForm
+);

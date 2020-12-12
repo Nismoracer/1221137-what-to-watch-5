@@ -1,36 +1,9 @@
-import React, {useRef, useEffect, useState} from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import {connect} from "react-redux";
-import {login} from "../../store/api-action";
 
-const checkEmail = (email) => {
-  const template = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return template.test(String(email).toLowerCase());
-};
-
-const AuthScreen = ({wrongAuth, onSubmit}) => {
-
-  const [validEmail, setEmailState] = useState(true);
-
-  const loginRef = useRef();
-  const passwordRef = useRef();
-
-  useEffect(() => {
-    loginRef.current.focus();
-  }, []);
-
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-    if (!checkEmail(loginRef.current.value)) {
-      setEmailState(false);
-      return;
-    }
-    onSubmit({
-      login: loginRef.current.value,
-      password: passwordRef.current.value,
-    });
-  };
+const AuthScreen = (props) => {
+  const {wrongAuth, validEmail, onSubmitClick, loginRef, passwordRef} = props;
 
   return (
     <div className="user-page">
@@ -47,7 +20,7 @@ const AuthScreen = ({wrongAuth, onSubmit}) => {
       </header>
 
       <div className="sign-in user-page__content">
-        <form action="#" className="sign-in__form" onSubmit={handleSubmit}>
+        <form action="#" className="sign-in__form" onSubmit={onSubmitClick}>
           { (!validEmail) ? (
             <div className="sign-in__message">
               <p>Please enter a valid email address</p>
@@ -94,20 +67,12 @@ const AuthScreen = ({wrongAuth, onSubmit}) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  wrongAuth: state.USER.errorFlag,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  onSubmit(authData) {
-    dispatch(login(authData));
-  }
-});
-
 AuthScreen.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  loginRef: PropTypes.object.isRequired,
+  passwordRef: PropTypes.object.isRequired,
+  validEmail: PropTypes.bool.isRequired,
+  onSubmitClick: PropTypes.func.isRequired,
   wrongAuth: PropTypes.bool.isRequired,
 };
 
-export {AuthScreen};
-export default connect(mapStateToProps, mapDispatchToProps)(AuthScreen);
+export default AuthScreen;

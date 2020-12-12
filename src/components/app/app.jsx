@@ -8,9 +8,15 @@ import MyList from "../my-list/my-list";
 import Player from "../player/player";
 import AuthScreen from "../auth-screen/auth-screen";
 import browserHistory from "../../browser-history";
+import withForm from "../../hocs/with-form/with-form";
+import withValidation from "../../hocs/with-validation/with-validation";
+import withFilter from "../../hocs/with-filter/with-filter";
+
+const AddReviewWrapped = withForm(AddReview);
+const AuthScreenWrapped = withValidation(AuthScreen);
+const FilmWrapped = withFilter(Film);
 
 const App = () => {
-
   return (
     <BrowserRouter history={browserHistory}>
       <Switch>
@@ -24,7 +30,7 @@ const App = () => {
           )}>
         </Route>
         <Route exact path="/login">
-          <AuthScreen />
+          <AuthScreenWrapped />
         </Route>
         <PrivateRoute exact path="/mylist"
           render={({history}) => (
@@ -37,14 +43,14 @@ const App = () => {
           render={({match}) => {
             const {id} = match.params;
             return (
-              <AddReview movieId = {id} />);
+              <AddReviewWrapped movieId = {id} />);
           }}
         />
         <Route exact path="/films/:id"
           render={({match, history}) => {
             const {id} = match.params;
             return (
-              <Film
+              <FilmWrapped
                 movieId = {id}
                 onPlayClick = {(activeMovie) => history.push(`/player/${activeMovie.id}`)}
                 onMovieClick = {(activeMovie) => history.push(`/films/${activeMovie.id}`)}

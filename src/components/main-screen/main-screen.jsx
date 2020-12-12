@@ -8,6 +8,9 @@ import LoadMore from "../load-more/load-more";
 import Promo from "../promo/promo";
 import {filterMoviesListAction} from "../../store/action";
 import {MOVIES_COUNT_PER_STEP} from "../../const";
+import {withList} from "../../hocs/with-list/with-list";
+
+const FilterWrapped = withList(Filter);
 
 const MainScreen = ({promo, films, filteredList, filterList,
   onPlayPromoClick, onMovieClick}) => {
@@ -41,7 +44,7 @@ const MainScreen = ({promo, films, filteredList, filterList,
       <section className="catalog">
         <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-        <Filter
+        <FilterWrapped
           films={films}
           onFilterClick={handleFilterClick}
         />
