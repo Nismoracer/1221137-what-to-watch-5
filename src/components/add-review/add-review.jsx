@@ -79,7 +79,6 @@ AddReview.propTypes = {
   postState: PropTypes.string.isRequired,
   auth: PropTypes.string.isRequired,
   buttonDisabled: PropTypes.bool.isRequired,
-  onSubmit: PropTypes.func.isRequired,
   onRatingChange: PropTypes.func.isRequired,
   onReviewChange: PropTypes.func.isRequired,
   onFormSubmit: PropTypes.func.isRequired,

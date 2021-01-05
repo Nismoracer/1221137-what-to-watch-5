@@ -38,9 +38,10 @@ export const createAPI = (onUnauthorized) => {
 };
 
 export const adaptToClient = (movie) => {
+  /* eslint-disable */
   const {background_color, background_image, description, director, genre, id,
-  is_favorite, name, poster_image, preview_image, preview_video_link, rating,
-  released, run_time, scores_count, starring, video_link } = movie;
+    is_favorite, name, poster_image, preview_image, preview_video_link, rating,
+    released, run_time, scores_count, starring, video_link} = movie;
   return {
     backgroundColor: background_color,
     backgroundImage: background_image,
@@ -60,4 +61,5 @@ export const adaptToClient = (movie) => {
     starring,
     videoLink: video_link
   };
+  /* eslint-disable */
 };

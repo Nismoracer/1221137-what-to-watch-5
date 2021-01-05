@@ -23,7 +23,7 @@ const MoviesList = ({films, onMovieClick}) => {
 
 MoviesList.propTypes = {
   onMovieClick: PropTypes.func.isRequired,
-  films: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)).isRequired,
+  films: PropTypes.arrayOf(PropTypes.shape(propsTypesFilm)),
 };
 
 export default MoviesList;

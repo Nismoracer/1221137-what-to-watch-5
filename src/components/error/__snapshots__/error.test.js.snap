@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Should Error render correctly 1`] = `
+<p
+  style={
+    Object {
+      "padding": "15px",
+    }
+  }
+>
+  Sorry! Server is unavailable. Please, try later...
+</p>
+`;

@@ -68,8 +68,8 @@ const AuthScreen = (props) => {
 };
 
 AuthScreen.propTypes = {
-  loginRef: PropTypes.object.isRequired,
-  passwordRef: PropTypes.object.isRequired,
+  loginRef: PropTypes.object,
+  passwordRef: PropTypes.object,
   validEmail: PropTypes.bool.isRequired,
   onSubmitClick: PropTypes.func.isRequired,
   wrongAuth: PropTypes.bool.isRequired,

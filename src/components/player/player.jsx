@@ -14,7 +14,6 @@ const Player = ({onHomeClick, movieId, films}) => {
   const [isPlaying, setPlaying] = useState(false);
   const videoRef = useRef();
 
-
   useEffect(() => {
     const movie = videoRef.current;
     movie.src = videoLink;

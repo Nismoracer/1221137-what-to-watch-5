@@ -119,8 +119,6 @@ const Film = (props) => {
 
 Film.propTypes = {
   authInfo: PropTypes.string.isRequired,
-  changeFavorites: PropTypes.func.isRequired,
-  requestReviews: PropTypes.func.isRequired,
   onSameMovies: PropTypes.func.isRequired,
   onPlayClick: PropTypes.func.isRequired,
   onMovieClick: PropTypes.func.isRequired,

@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Should render Movie preview correctly 1`] = `
+<div
+  className="small-movie-card__image"
+  onClick={[Function]}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  <video
+    height="100%"
+    muted={true}
+    width="100%"
+  />
+</div>
+`;
