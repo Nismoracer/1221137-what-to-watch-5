@@ -12,6 +12,9 @@ const Player = ({onHomeClick, movieId, films}) => {
 
   const [isLoading, setLoading] = useState(true);
   const [isPlaying, setPlaying] = useState(false);
+  /* eslint-disable */
+  const [playingTime, updatePlayingTime] = useState(0);
+  /* eslint-disable */
   const videoRef = useRef();
 
   useEffect(() => {
@@ -47,6 +50,12 @@ const Player = ({onHomeClick, movieId, films}) => {
       return 0;
     }
     return videoRef.current.currentTime / duration * 100;
+  };
+
+  const setPlayingTime = (percents) => {
+    const currentTime = duration * (percents / 100);
+    videoRef.current.currentTime = currentTime;
+    updatePlayingTime(currentTime);
   };
 
   const getTimeLeft = () => {
@@ -89,6 +98,7 @@ const Player = ({onHomeClick, movieId, films}) => {
         getTimeLeft={getTimeLeft}
         onPlayPauseClick={handlePlayPauseClick}
         onFullscreenClick={handleFullscreenClick}
+        onPlayingTimeSet={setPlayingTime}
         isPlaying={isPlaying}
       />
     </div>

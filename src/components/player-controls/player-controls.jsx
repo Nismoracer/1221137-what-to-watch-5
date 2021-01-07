@@ -1,10 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import PropTypes from "prop-types";
 
 let timer = null;
 
-const PlayerControls = ({name, isPlaying, getTimeLeft, getProgress, onPlayPauseClick, onFullscreenClick}) => {
+const PlayerControls = ({name, isPlaying, getTimeLeft, getProgress, onPlayPauseClick, onFullscreenClick, onPlayingTimeSet}) => {
+  /* eslint-disable */
   const [elapsed, updateTime] = useState(0);
+  /* eslint-disable */
+  const elapsedRef = useRef();
 
   useEffect(() => {
     return () => {
@@ -24,12 +27,28 @@ const PlayerControls = ({name, isPlaying, getTimeLeft, getProgress, onPlayPauseC
     }
   };
 
+  const handleTogglerDrag = (evt) => {
+    evt.preventDefault();
+    const scale = elapsedRef.current;
+    const leftBorder = scale.getBoundingClientRect().left;
+    const rightBorder = scale.getBoundingClientRect().right;
+
+    let volume = Math.round((evt.clientX - leftBorder) / (rightBorder - leftBorder) * 100);
+    if (volume < 0) {
+      volume = 0;
+    } else if (volume > 100) {
+      volume = 100;
+    }
+    onPlayingTimeSet(volume);
+  };
+
   return (
     <div className="player__controls">
       <div className="player__controls-row">
-        <div className="player__time">
-          <progress className="player__progress" value={`${elapsed}`} max="100"></progress>
-          <div className="player__toggler" style={{left: `${elapsed}%`}}
+        <div className="player__time" ref = {elapsedRef}>
+          <progress className="player__progress" value={`${getProgress()}`} max="100"></progress>
+          <div className="player__toggler" style={{left: `${getProgress()}%`}}
+            onDragEnd = {(evt) => handleTogglerDrag(evt)}
           >Toggler</div>
         </div>
         <div className="player__time-value">{getTimeLeft()}</div>
@@ -71,6 +90,7 @@ PlayerControls.propTypes = {
   getTimeLeft: PropTypes.func.isRequired,
   getProgress: PropTypes.func.isRequired,
   onPlayPauseClick: PropTypes.func.isRequired,
+  onPlayingTimeSet: PropTypes.func.isRequired,
   onFullscreenClick: PropTypes.func.isRequired,
 };
 
